@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de tarefas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+    <div id="app" class="container-fluid">
+
+        <h1>{{ titulo }}</h1>
+
+        <div class="row">
+            <div class="col">
+                <label for="item">Tarefa:</label>
+                <input type="text" class="form-control" id="item" v-model="nova_tarefa.descricao" >
+            </div>
+        </div>
+
+        <div class="form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" v-model="nova_tarefa.concluida"> Concluída
+            </label>
+        </div>
+
+        <button class="btn btn-success" @click="add">Add</button>
+
+        <hr>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descrição</th>
+                    <th>Concluída?</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in items">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.descricao }}</td>
+                    <td>{{ item.concluida ? 'Sim' : 'Não' }}</td>
+                    <td>
+                        <button @click="edit(item)" class="btn btn-primary">Editar</button>
+                        <button @click="remove(item)" class="btn btn-danger">Excluir</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                titulo: 'Lista de tarefas',
+                nova_tarefa: {
+                    id: 0,
+                    descricao: '',
+                    concluida: false
+                },
+                items: [
+                    {
+                        id: 1,
+                        descricao: 'SEL-0212455',
+                        concluida: true,
+                    }
+                ],
+                indice: null
+            },
+            methods: {
+                add(){
+                    if(this.nova_tarefa.id == 0){
+                        this.nova_tarefa.id = this.items.length + 1;
+                        this.items.push(this.nova_tarefa);
+                    }else{
+                        this.items[this.indice] = this.nova_tarefa
+                    }
+
+                    this.nova_tarefa = { 
+                        id: 0, 
+                        descricao: '', 
+                        concluida: false
+                    }
+                },
+                edit(item){
+                    this.indice = this.items.indexOf(item);
+                    this.nova_tarefa = Object.assign({}, item);
+                },
+                remove(item){
+                    const indice = this.items.indexOf(item);
+                    this.items.splice(indice, 1);
+                }
+            },
+        });
+    </script>
+
+
+</body>
+</html>
